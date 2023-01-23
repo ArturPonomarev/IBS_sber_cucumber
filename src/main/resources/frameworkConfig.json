@@ -1,0 +1,6 @@
+{
+  "pageLoadTimeout": 30,
+  "elementWaitingTimeoutImplicit": 7,
+  "elementWaitingTimeoutExplicit": 7,
+  "explicitPollingInterval": 500
+}
