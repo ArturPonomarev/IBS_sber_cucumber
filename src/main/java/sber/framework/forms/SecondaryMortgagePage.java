@@ -1,21 +1,30 @@
 package sber.framework.forms;
 
+import com.beust.ah.A;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 import sber.framework.utils.BrowserUtils;
+import sber.framework.utils.StringUtils;
+
+import javax.swing.*;
 
 
 public class SecondaryMortgagePage extends BaseForm {
 
     private final String inputFieldByNameTemplate = "//*[contains(text(),'%s')]/preceding-sibling::input";
+    private final String valueByNameTemplate = "//*[contains(text(),'%s')]/following-sibling::*//*[text()]";
     private final String calculatorFrameId = "iFrameResizer0";
 
     //TODO: Попытаться сокртить xpath
     @FindBy(xpath = "//*[contains(text(),'Страхование жизни и здоровья')]/..//input")
     private WebElement insuranceCheckBox;
+
+    @FindBy(xpath = "//*[contains(@class,'switch-input')]")
+    private WebElement checkBoxForUpdate;
 
     public void enterToCalculator() {
         BrowserUtils.enterToFrame(calculatorFrameId);
@@ -34,6 +43,20 @@ public class SecondaryMortgagePage extends BaseForm {
 
     public void clickHealthInsuranceCheckbox() {
         ((JavascriptExecutor)driver).executeScript("arguments[0].click();", insuranceCheckBox);
+    }
+
+    public String getCalculatedValueByName(String valueName) {
+        var elements = driver.findElements(By.xpath(String.format(valueByNameTemplate,valueName)));
+        return wait.until(dr -> elements.stream()
+                .filter(el -> !el.getText().equals(""))
+                .findFirst()
+                .get()
+                .getText());
+    }
+
+    public void waitUntilValueUpdate(Integer excpectedCredit) {
+        wait.until(dr -> StringUtils.convertStringToInt(getCalculatedValueByName("Сумма кредита"))
+                .equals(excpectedCredit));
     }
 
     private void sendKeysByNumpads(WebElement element, String value) {

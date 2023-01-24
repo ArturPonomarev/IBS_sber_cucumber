@@ -26,9 +26,15 @@ public class MortgageTest extends BaseTest {
         mainPage.clickSubMenuButton(MORTGAGE_SUBMENU_NAME);
         mortgagePage.enterToCalculator();
         mortgagePage.inputCalculatorField(PRICE_FIELD_NAME,PRICE_VALUE.toString());
+        mortgagePage.waitUntilValueUpdate(4580000);
         mortgagePage.inputCalculatorField(INITIAL_FEE_FIELD_NAME,INITIAL_FEE_VALUE.toString());
+        mortgagePage.waitUntilValueUpdate(2122000);
         mortgagePage.inputCalculatorField(CREDIT_TERM_FIELD_NAME,CREDIT_TERM_VALUE.toString());
         mortgagePage.clickHealthInsuranceCheckbox();
+        System.out.println(mortgagePage.getCalculatedValueByName("Сумма кредита"));
+        System.out.println(mortgagePage.getCalculatedValueByName("Ежемесячный платеж"));
+        System.out.println(mortgagePage.getCalculatedValueByName("Необходимый доход"));
+        System.out.println(mortgagePage.getCalculatedValueByName("Процентная ставка"));
 
         mortgagePage.leaveCalculator();
     }
