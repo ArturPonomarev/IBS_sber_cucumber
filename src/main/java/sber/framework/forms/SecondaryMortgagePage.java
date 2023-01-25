@@ -1,5 +1,6 @@
 package sber.framework.forms;
 
+import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
@@ -23,14 +24,17 @@ public class SecondaryMortgagePage extends BaseForm {
     @FindBy(xpath = "//*[contains(@class,'switch-input')]")
     private WebElement checkBoxForUpdate;
 
+    @Step("Вход в фрейм калькулятора")
     public void enterToCalculator() {
         BrowserUtils.enterToFrame(calculatorFrameId);
     }
 
+    @Step("Выход из фрейма калькулятора")
     public void leaveCalculator() {
         BrowserUtils.leaveAllFrames();
     }
 
+    @Step("Ввод значения: {fieldValue} в поле калькулятора: {fieldName}")
     public void inputCalculatorField(String fieldName, String fieldValue) {
         var element = driver.findElement(By.xpath(String.format(inputFieldByNameTemplate,fieldName)));
         element.sendKeys(Keys.chord(Keys.CONTROL + "a"));
@@ -39,15 +43,18 @@ public class SecondaryMortgagePage extends BaseForm {
         waitUntilCreditValueUpdate();
     }
 
+    @Step("Переключение чекбокса 'Страхование жизни и здоровья'")
     public void clickHealthInsuranceCheckbox() {
 
-        Integer oldProcent = StringUtils.convertStringToInt(getCalculatedValueByName("Процентная ставка"));
+        Integer oldPercent = StringUtils.convertStringToInt(getCalculatedValueByName("Процентная ставка"));
 
         ((JavascriptExecutor)driver).executeScript("arguments[0].click();", insuranceCheckBox);
 
-        wait.until(dr -> StringUtils.convertStringToInt(getCalculatedValueByName("Процентная ставка")).equals(oldProcent + 10));
+        wait.until(dr -> StringUtils.convertStringToInt(getCalculatedValueByName("Процентная ставка"))
+                .equals(oldPercent + INSURANCE_CHECKBOX_DELTA));
     }
 
+    @Step("Получение значения из поля {valueName}")
     public String getCalculatedValueByName(String valueName) {
         var elements = driver.findElements(By.xpath(String.format(calculatedValueByNameTemplate,valueName)));
         return wait.until(dr -> elements.stream()

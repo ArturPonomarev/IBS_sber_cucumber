@@ -1,5 +1,6 @@
 package sber.framework.forms;
 
+import io.qameta.allure.Step;
 import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -17,6 +18,7 @@ public class MainPage extends BaseForm {
     @FindBy(xpath = "//*[contains(@class,'kitt-top-menu__item_opened')]//*[contains(@class,'kitt-top-menu__link_second')]")
     private List<WebElement> subMenuButtonsList;
 
+    @Step("Открытие верхнего меню с названием {menuName}")
     public void clickOpenMenuButton(String menuName) {
         var element = topMenuButtonsList.stream()
                 .filter(el -> el.getText().equals(menuName))
@@ -29,6 +31,7 @@ public class MainPage extends BaseForm {
         waitIsMenuOpen(menuName);
     }
 
+    @Step("Открытие подменю с названием {subMenuName}")
     public void clickSubMenuButton(String subMenuName) {
         var element = subMenuButtonsList.stream()
                 .filter(el -> el.getText().equals(subMenuName))

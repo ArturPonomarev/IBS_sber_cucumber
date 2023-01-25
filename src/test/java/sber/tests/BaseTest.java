@@ -1,13 +1,17 @@
 package sber.tests;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.openqa.selenium.WebDriver;
 import sber.framework.driver.DriverManager;
 import sber.framework.utils.FrameworkUtils;
 import sber.framework.utils.JsonDataProvider;
+import sber.framework.utils.MyAllureListener;
 
+@ExtendWith(MyAllureListener.class)
 public abstract class BaseTest {
 
     protected WebDriver driver = DriverManager.getInstance().getDriver();
@@ -26,6 +30,11 @@ public abstract class BaseTest {
 
     @AfterEach
     public void tearDown() {
+
+    }
+
+    @AfterAll
+    public static void afterAll() {
         FrameworkUtils.closeFramework();
     }
 }
