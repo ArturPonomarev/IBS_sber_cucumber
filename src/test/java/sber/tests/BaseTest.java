@@ -26,6 +26,6 @@ public abstract class BaseTest {
 
     @AfterEach
     public void tearDown() {
-        //FrameworkUtils.closeFramework();
+        FrameworkUtils.closeFramework();
     }
 }

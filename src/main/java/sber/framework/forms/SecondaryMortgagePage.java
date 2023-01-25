@@ -1,22 +1,19 @@
 package sber.framework.forms;
 
-import com.beust.ah.A;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 import sber.framework.utils.BrowserUtils;
 import sber.framework.utils.StringUtils;
 
-import javax.swing.*;
-
 
 public class SecondaryMortgagePage extends BaseForm {
 
+    private final int INSURANCE_CHECKBOX_DELTA = 10;
     private final String inputFieldByNameTemplate = "//*[contains(text(),'%s')]/preceding-sibling::input";
-    private final String valueByNameTemplate = "//*[contains(text(),'%s')]/following-sibling::*//*[text()]";
+    private final String calculatedValueByNameTemplate = "//*[contains(text(),'%s')]/following-sibling::*//*[text()]";
     private final String calculatorFrameId = "iFrameResizer0";
 
     //TODO: Попытаться сокртить xpath
@@ -39,14 +36,20 @@ public class SecondaryMortgagePage extends BaseForm {
         element.sendKeys(Keys.chord(Keys.CONTROL + "a"));
         element.sendKeys(Keys.DELETE);
         sendKeysByNumpads(element,fieldValue);
+        waitUntilCreditValueUpdate();
     }
 
     public void clickHealthInsuranceCheckbox() {
+
+        Integer oldProcent = StringUtils.convertStringToInt(getCalculatedValueByName("Процентная ставка"));
+
         ((JavascriptExecutor)driver).executeScript("arguments[0].click();", insuranceCheckBox);
+
+        wait.until(dr -> StringUtils.convertStringToInt(getCalculatedValueByName("Процентная ставка")).equals(oldProcent + 10));
     }
 
     public String getCalculatedValueByName(String valueName) {
-        var elements = driver.findElements(By.xpath(String.format(valueByNameTemplate,valueName)));
+        var elements = driver.findElements(By.xpath(String.format(calculatedValueByNameTemplate,valueName)));
         return wait.until(dr -> elements.stream()
                 .filter(el -> !el.getText().equals(""))
                 .findFirst()
@@ -54,9 +57,17 @@ public class SecondaryMortgagePage extends BaseForm {
                 .getText());
     }
 
-    public void waitUntilValueUpdate(Integer excpectedCredit) {
+    private void waitUntilCreditValueUpdate() {
+        Integer price = StringUtils.convertStringToInt(driver.findElement(By.xpath(
+                String.format(inputFieldByNameTemplate,"Стоимость недвижимости")))
+                .getAttribute("value"));
+        Integer initialFee = StringUtils.convertStringToInt(driver.findElement(By.xpath(
+                String.format(inputFieldByNameTemplate,"Первоначальный взнос")))
+                .getAttribute("value"));
+        Integer expectedCredit = price - initialFee;
+
         wait.until(dr -> StringUtils.convertStringToInt(getCalculatedValueByName("Сумма кредита"))
-                .equals(excpectedCredit));
+                .equals(expectedCredit));
     }
 
     private void sendKeysByNumpads(WebElement element, String value) {
