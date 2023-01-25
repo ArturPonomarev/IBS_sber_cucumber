@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import sber.framework.forms.MainPage;
 import sber.framework.forms.SecondaryMortgagePage;
 
+import static sber.framework.utils.JsonDataProvider.testData;
+
 public class MortgageTest extends BaseTest {
 
     private final String MORTGAGE_MENU_NAME = "Ипотека";
@@ -14,16 +16,10 @@ public class MortgageTest extends BaseTest {
     private final String INITIAL_FEE_FIELD_NAME = "Первоначальный взнос";
     private final String CREDIT_TERM_FIELD_NAME = "Срок кредита";
 
-    //TODO: Вынести в тестовые данные
-    private final String expectedCredit = "2 122 000 ₽";
-    private final String expectedMounthPay = "21 664 ₽";
-    private final String expectedIncome = "36 829 ₽";
-    private final String expectedProcent = "11";
-
-
-    private final Integer PRICE_VALUE = 5180000;
-    private final Integer INITIAL_FEE_VALUE = 3058000;
-    private final Integer CREDIT_TERM_VALUE = 30;
+    private final String CREDIT_SUMM_VALUE_NAME = "Сумма кредита";
+    private final String MONTH_PAY_VALUE_NAME = "Ежемесячный платеж";
+    private final String NEED_INCOME_VALUE_NAME = "Необходимый доход";
+    private final String CREDIT_PROCENT_VALUE_NAME = "Процентная ставка";
 
     MainPage mainPage = new MainPage();
     SecondaryMortgagePage mortgagePage = new SecondaryMortgagePage();
@@ -33,14 +29,18 @@ public class MortgageTest extends BaseTest {
         mainPage.clickOpenMenuButton(MORTGAGE_MENU_NAME);
         mainPage.clickSubMenuButton(MORTGAGE_SUBMENU_NAME);
         mortgagePage.enterToCalculator();
-        mortgagePage.inputCalculatorField(PRICE_FIELD_NAME,PRICE_VALUE.toString());
-        mortgagePage.inputCalculatorField(INITIAL_FEE_FIELD_NAME,INITIAL_FEE_VALUE.toString());
-        mortgagePage.inputCalculatorField(CREDIT_TERM_FIELD_NAME,CREDIT_TERM_VALUE.toString());
+        mortgagePage.inputCalculatorField(PRICE_FIELD_NAME, testData.calculatorInputValues.housingPrice.toString());
+        mortgagePage.inputCalculatorField(INITIAL_FEE_FIELD_NAME,testData.calculatorInputValues.initialFee.toString());
+        mortgagePage.inputCalculatorField(CREDIT_TERM_FIELD_NAME,testData.calculatorInputValues.creditTerm.toString());
         mortgagePage.clickHealthInsuranceCheckbox();
-        Assertions.assertEquals(expectedCredit, mortgagePage.getCalculatedValueByName("Сумма кредита"),"Сумма кредита не соотвествует ожидаемой");
-        Assertions.assertEquals(expectedMounthPay, mortgagePage.getCalculatedValueByName("Ежемесячный платеж"), "Ежемесячный платёж не соотвествует ожидаемой");
-        Assertions.assertEquals(expectedIncome, mortgagePage.getCalculatedValueByName("Необходимый доход"), "Необходимый доход не соотвествует ожидаемому");
-        Assertions.assertEquals(expectedProcent, mortgagePage.getCalculatedValueByName("Процентная ставка"), "Процентная ставка не соответствует ожидаемой");
+        Assertions.assertEquals(testData.expectedValues.credit, mortgagePage.getCalculatedValueByName(CREDIT_SUMM_VALUE_NAME),
+                "Сумма кредита не соотвествует ожидаемой");
+        Assertions.assertEquals(testData.expectedValues.monthPay, mortgagePage.getCalculatedValueByName(MONTH_PAY_VALUE_NAME),
+                "Ежемесячный платёж не соотвествует ожидаемой");
+        Assertions.assertEquals(testData.expectedValues.income, mortgagePage.getCalculatedValueByName(NEED_INCOME_VALUE_NAME),
+                "Необходимый доход не соотвествует ожидаемому");
+        Assertions.assertEquals(testData.expectedValues.percent, mortgagePage.getCalculatedValueByName(CREDIT_PROCENT_VALUE_NAME),
+                "Процентная ставка не соответствует ожидаемой");
         mortgagePage.leaveCalculator();
     }
 }

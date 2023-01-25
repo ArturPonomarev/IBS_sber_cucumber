@@ -1,3 +1,16 @@
 {
-  "baseUrl": "http://www.sberbank.ru/ru/person"
+  "baseUrl": "http://www.sberbank.ru/ru/person",
+
+  "expectedValues": {
+    "credit": "2 122 000 ₽",
+    "monthPay": "21 664 ₽",
+    "income": "36 829 ₽",
+    "percent": "11"
+  },
+
+  "calculatorInputValues": {
+    "housingPrice": 5180000,
+    "initialFee": 3058000,
+    "creditTerm": 30
+  }
 }
