@@ -9,6 +9,8 @@ import org.openqa.selenium.support.FindBy;
 import sber.framework.utils.BrowserUtils;
 import sber.framework.utils.StringUtils;
 
+import java.util.List;
+
 
 public class SecondaryMortgagePage extends BaseForm {
 
@@ -36,7 +38,7 @@ public class SecondaryMortgagePage extends BaseForm {
 
     @Step("Ввод значения: {fieldValue} в поле калькулятора: {fieldName}")
     public void inputCalculatorField(String fieldName, String fieldValue) {
-        var element = driver.findElement(By.xpath(String.format(inputFieldByNameTemplate,fieldName)));
+        WebElement element = driver.findElement(By.xpath(String.format(inputFieldByNameTemplate,fieldName)));
         element.sendKeys(Keys.chord(Keys.CONTROL + "a"));
         element.sendKeys(Keys.DELETE);
         sendKeysByNumpads(element,fieldValue);
@@ -56,7 +58,7 @@ public class SecondaryMortgagePage extends BaseForm {
 
     @Step("Получение значения из поля {valueName}")
     public String getCalculatedValueByName(String valueName) {
-        var elements = driver.findElements(By.xpath(String.format(calculatedValueByNameTemplate,valueName)));
+        List<WebElement> elements = driver.findElements(By.xpath(String.format(calculatedValueByNameTemplate,valueName)));
         return wait.until(dr -> elements.stream()
                 .filter(el -> !el.getText().equals(""))
                 .findFirst()
@@ -78,7 +80,7 @@ public class SecondaryMortgagePage extends BaseForm {
     }
 
     private void sendKeysByNumpads(WebElement element, String value) {
-        for (var el : value.toCharArray()) {
+        for (char el : value.toCharArray()) {
             switch (el) {
                 case '0':
                     element.sendKeys(Keys.NUMPAD0);
