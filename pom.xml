@@ -112,7 +112,8 @@
                         -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
                     </argLine>
                     <systemPropertyVariables>
-                        <browserName>chrome</browserName>
+                        <browserName>remote</browserName>
+                        <remoteBrowserName>chrome</remoteBrowserName>
                         <allure.results.directory>${project.build.directory}/reports/allure-results</allure.results.directory>
                     </systemPropertyVariables>
                     <properties>

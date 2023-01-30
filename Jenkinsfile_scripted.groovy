@@ -11,7 +11,6 @@ pipeline {
                          userRemoteConfigs: [[url: 'https://github.com/ArturPonomarev/IBS_sber_cucumber']]]
                 )
             }
-
         }
         stage ('build') {
             steps{
@@ -20,7 +19,7 @@ pipeline {
         }
         stage ('Run Tests') {
             steps{
-                sh "${mvn} test"
+                sh "${mvn} test -DbrowserName=remote -DremoteBrowserName=${REMOTE_BROWSER}"
             }
         }
         stage ('Allure Report Generation') {

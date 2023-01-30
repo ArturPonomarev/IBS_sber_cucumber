@@ -15,9 +15,11 @@ import java.net.URI;
 public class DriverFactory {
 
     private static final String BROWSER_PROPERTY_NAME = "browserName";
+    private static final String REMOTE_BROWSER_PROPERTY_NAME = "remoteBrowserName";
     private static final String CHROME_BROWSER_NAME = "chrome";
     private static final String FIREFOX_BROWSER_NAME = "firefox";
     private static final String EDGE_BROWSER_NAME = "edge";
+    private static final String OPERA_BROWSER_NAME = "opera";
     private static final String REMOTE_BROWSER_NAME = "remote";
 
     public static WebDriver createDriver() {
@@ -38,10 +40,24 @@ public class DriverFactory {
             case REMOTE_BROWSER_NAME:
                 WebDriverManager.chromedriver().setup();
                 DesiredCapabilities capabilities = new DesiredCapabilities();
-                capabilities.setCapability("browserName", "chrome");
-                capabilities.setCapability("browserVersion", "109.0");
+                switch (System.getProperty(REMOTE_BROWSER_PROPERTY_NAME).toLowerCase()){
+                    case CHROME_BROWSER_NAME:
+                        capabilities.setCapability("browserName", "chrome");
+                        capabilities.setCapability("browserVersion", "109.0");
+                        break;
+                    case FIREFOX_BROWSER_NAME:
+                        capabilities.setCapability("browserName", "firefox");
+                        capabilities.setCapability("browserVersion", "109.0");
+                        break;
+                    case OPERA_BROWSER_NAME:
+                        capabilities.setCapability("browserName", "opera");
+                        capabilities.setCapability("browserVersion", "94.0");
+                        break;
+                    default:
+                        throw new RuntimeException("Incorrect remote browser name in config file");
+                }
                 capabilities.setCapability("enableVNC",true);
-                capabilities.setCapability("enableVideo",true);
+                capabilities.setCapability("enableVideo",false);
                 try {
                     return new RemoteWebDriver(
                             URI.create("http://149.154.71.152:8080/wd/hub").toURL(),
